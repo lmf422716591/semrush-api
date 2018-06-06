@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ScriptBurn\SemrushApi;
 use \GuzzleHttp\Client;
 
@@ -19,7 +18,7 @@ class Request
         $this->endPoint = "https://api.semrush.com/";
         $this->cacheTime = $cacheTime;
         $this->cache = $this->cacheTime && $cache ? $cache : false;
-        \Log::debug('Caching API result: ' . ($this->cache ? 'yes ' : 'no ' . $this->cacheTime) . ($this->cache ? ($this->cacheTime == "-1" ? ' forever' : (" " . $this->cacheTime . " mins")) : ''));
+        \Log::debug('Caching API result: '.($this->cache ? 'yes ' : 'no '.$this->cacheTime).($this->cache ? ($this->cacheTime == "-1" ? ' forever' : (" ".$this->cacheTime." mins")) : ''));
     }
 
     public function execAPI($type, $params, $options)
@@ -37,7 +36,7 @@ class Request
         $params = array_merge($params_default, $params);
 
         $params['key'] = $this->apiKey;
-        if ($params['database'] )
+        if ($params['database'])
         {
             if (!$this->databases($params['database']))
             {
@@ -45,7 +44,7 @@ class Request
             }
         }
 
-        $url = $this->endPoint . "?" . http_build_query($params);
+        $url = $this->endPoint."?".http_build_query($params);
         \Log::debug("Running API: $url");
 
         //p_n($url);
@@ -73,7 +72,16 @@ class Request
         // $this->client->get( $url);
         if ($this->client->error)
         {
-            throw new \Exception($this->client->error_message);
+            try
+            {
+                $rows = array_values(array_filter(explode(PHP_EOL, trim($this->client->response))));
+                $msg = $this->translateError($rows[0]);
+                throw new \Exception($this->client->error_message);
+            }
+            catch (\Exception $e)
+            {
+                throw new \Exception($e->getMessage());
+            }
         }
         $data = $this->client->response;
 
@@ -158,7 +166,7 @@ class Request
         if (trim(strtolower($matches[0][1])) == 'error')
         {
             $error = ucwords(trim(strtolower($matches[0][3])));
-            \Log::debug("API Error: " . $error);
+            \Log::debug("API Error: ".$error);
             throw new \Exception($error);
         }
         //var_dump($matches);
@@ -344,7 +352,7 @@ class Request
                 //$curl->response=json_decode('"Keyword;Search Volume;CPC;Competition;Number of Results\r\ncheap;18100;1.18;0.16;419000000"');
                 if ($curl->error)
                 {
-                    throw new \Exception('Error: ' . $phrase . ' error_code ' . $curl->error_code);
+                    throw new \Exception('Error: '.$phrase.' error_code '.$curl->error_code);
                 }
                 else
                 {

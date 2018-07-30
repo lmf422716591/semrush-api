@@ -26,7 +26,7 @@ class Request
         if($this->logger)
         {
 
-            call_user_func_array($this->logger,$type,[$msg])
+            call_user_func_array($this->logger,$type,[$msg]);
         }
     }
     public function execAPI($type, $params, $options)

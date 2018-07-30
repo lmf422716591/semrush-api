@@ -5,7 +5,7 @@ namespace ScriptBurn\SemrushApi;
 
 class Analytics extends Request
 {
-	private $keyWordReport, $urlReport;
+	private $keyWordReport, $urlReport, $domainReport;
 	protected $apiKey, $cache, $cacheTime;
 
 	public function keyWordReport()
@@ -27,5 +27,14 @@ class Analytics extends Request
 		}
 
 		return $this->urlReport;
+	}
+	public function domainReport()
+	{
+		if (!$this->domainReport)
+		{
+			$this->domainReport = new DomainReport($this->apiKey, $this->cache, $this->cacheTime);
+		}
+
+		return $this->domainReport;
 	}
 }

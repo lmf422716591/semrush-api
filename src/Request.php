@@ -7,8 +7,8 @@ class Request
 {
     private $client, $endpoint;
 
-    protected $apiKey, $cache, $cacheTime;
-    public function __construct($apiKey, $cache = null, $cacheTime)
+    protected $apiKey, $cache, $cacheTime,$logger;
+    public function __construct($apiKey, $cache = null, $cacheTime,$logger=null)
     {
         //\Log::debug("API: $apiKey,, $cacheTime");
 
@@ -18,9 +18,17 @@ class Request
         $this->endPoint = "https://api.semrush.com/";
         $this->cacheTime = $cacheTime;
         $this->cache = $this->cacheTime && $cache ? $cache : false;
-        \Log::debug('Caching API result: '.($this->cache ? 'yes ' : 'no '.$this->cacheTime).($this->cache ? ($this->cacheTime == "-1" ? ' forever' : (" ".$this->cacheTime." mins")) : ''));
+        $this->logger=$logger;
+       $this->logger('Caching API result: '.($this->cache ? 'yes ' : 'no '.$this->cacheTime).($this->cache ? ($this->cacheTime == "-1" ? ' forever' : (" ".$this->cacheTime." mins")) : ''));
     }
+    private function logger($msg,$type="debug")
+    {
+        if($this->logger)
+        {
 
+            call_user_func_array($this->logger,$type,[$msg])
+        }
+    }
     public function execAPI($type, $params, $options)
     {
         $this->client->reset();
@@ -45,18 +53,18 @@ class Request
         }
 
         $url = $this->endPoint."?".http_build_query($params);
-        \Log::debug("Running API: $url");
+         $this->logger("Running API: $url",'debug');
 
         //p_n($url);
         if (@$options['cache'] && $data = $this->hasCache($url))
         {
-            \Log::debug('Found in cache');
+             $this->logger('Found in cache');
 
             return $data;
         }
 
         $data = $this->fetch($params, $options);
-        \Log::debug("API Result received");
+         $this->logger("API Result received");
         if (@$options['cache'])
         {
             $this->setCache($url, $data);
@@ -166,7 +174,7 @@ class Request
         if (trim(strtolower($matches[0][1])) == 'error')
         {
             $error = ucwords(trim(strtolower($matches[0][3])));
-            \Log::debug("API Error: ".$error);
+             $this->logger("API Error: ".$error);
             throw new \Exception($error);
         }
         //var_dump($matches);

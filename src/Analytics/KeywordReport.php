@@ -28,7 +28,7 @@ class KeyWordReport extends Analytics
         {
             throw new \Exception('You must provide API database');
         }
-        $params = ['phrase' => $keyword, 'type' => $type];
+        $params = ['phrase' => $keyword, 'type' => $type,'database'=>$database];
         $default_options = ['response_has_headers' => true, 'single_row' => false];
         $options = array_merge($default_options, $options);
 
@@ -49,7 +49,7 @@ class KeyWordReport extends Analytics
         {
             throw new \Exception('You must provide API database');
         }
-        $params = ['phrase' => $keyword, 'type' => 'phrase_related'];
+        $params = ['phrase' => $keyword, 'type' => 'phrase_related','database'=>$database];
         $default_options = ['response_has_headers' => true, 'single_row' => false];
         $options = array_merge($default_options, $options);
         return $this->execAPI($params['type'], $params, $options);

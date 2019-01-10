@@ -14,7 +14,7 @@ class Analytics extends Request
 		{
 			//\Log::debug("keyWordReport: ".$this->cacheTime);
 
-			$this->keyWordReport = new KeyWordReport($this->apiKey, $this->cache, $this->cacheTime);
+			$this->keyWordReport = new KeyWordReport($this->apiKey, $this->cache, $this->cacheTime, $this->logger);
 		}
 
 		return $this->keyWordReport;
@@ -23,7 +23,7 @@ class Analytics extends Request
 	{
 		if (!$this->urlReport)
 		{
-			$this->urlReport = new UrlReport($this->apiKey, $this->cache, $this->cacheTime);
+			$this->urlReport = new UrlReport($this->apiKey, $this->cache, $this->cacheTime, $this->logger);
 		}
 
 		return $this->urlReport;
@@ -32,7 +32,7 @@ class Analytics extends Request
 	{
 		if (!$this->domainReport)
 		{
-			$this->domainReport = new DomainReport($this->apiKey, $this->cache, $this->cacheTime);
+			$this->domainReport = new DomainReport($this->apiKey, $this->cache, $this->cacheTime, $this->logger);
 		}
 
 		return $this->domainReport;
